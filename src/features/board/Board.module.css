@@ -1,0 +1,20 @@
+.boards {
+  display: flex;
+  gap: 14px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.boardItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: bisque;
+  color: black;
+  width: 250px;
+  height: 120px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
