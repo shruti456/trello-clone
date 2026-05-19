@@ -18,3 +18,25 @@
   font-size: 18px;
   font-weight: 600;
 }
+
+.createBoard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: grey;
+  color: black;
+  width: 250px;
+  height: 80px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.list {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  width: 200px;
+  height: 250px;
+}

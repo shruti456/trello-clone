@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { createTask } from "../task/taskSlice";
 import { addTaskId } from "./listSlice";
 import Task from "../task/Task";
+import styles from "./List.module.css";
+import Button from "../../components/button/Button";
 
 export default function List({ listItem }) {
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -10,7 +12,7 @@ export default function List({ listItem }) {
   const [taskDesc, setTaskDesc] = useState("");
   const dispatch = useDispatch();
   function handleShowTaskForm() {
-    setShowTaskForm((x) => !x);
+    setShowTaskForm(true);
   }
 
   function handleAddTask(e) {
@@ -24,11 +26,15 @@ export default function List({ listItem }) {
       }),
     );
     dispatch(addTaskId({ listId: listItem.id, taskId: taskId }));
+
+    setShowTaskForm(false);
+    setTaskName("");
+    setTaskDesc("");
   }
   return (
-    <div>
+    <div className={styles.listItem}>
       <h3>{listItem.name}</h3>
-      {!showTaskForm && (
+      {showTaskForm && (
         <form>
           <input
             value={taskName}
@@ -40,13 +46,24 @@ export default function List({ listItem }) {
             onChange={(e) => setTaskDesc(e.target.value)}
             placeholder="Task Description"
           />
-          <button onClick={(e) => handleAddTask(e)}>Add task</button>
+          <Button
+            onClick={(e) => handleAddTask(e)}
+            type="button"
+            variant="primary"
+          >
+            Add task
+          </Button>
         </form>
       )}
-      {showTaskForm && <button onClick={handleShowTaskForm}>Add a task</button>}
+
       {listItem.taskIds.map((taskId) => (
         <Task key={taskId} taskId={taskId} />
       ))}
+      {!showTaskForm && (
+        <Button onClick={handleShowTaskForm} type="button" variant="secondary">
+          Add a task
+        </Button>
+      )}
     </div>
   );
 }

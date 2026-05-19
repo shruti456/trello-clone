@@ -47,7 +47,9 @@ export default function Board() {
           );
         })}
         <div>
-          <button onClick={handleAddBoard}>Create new board</button>
+          <button onClick={handleAddBoard} className={styles.createBoard}>
+            Create new board
+          </button>
         </div>
       </div>
       {showCreateBoardForm && (

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { addListIdInBoard } from "./boardSlice";
 import List from "../list/List";
+import styles from "./Board.module.css";
 
 export default function BoardPage() {
   const dispatch = useDispatch();
@@ -32,9 +33,11 @@ export default function BoardPage() {
           <button onClick={handleAddList}>Add a list</button>
         </div>
       )}
-      {lists?.allIds.map((listId) => (
-        <List key={listId} listItem={lists.byId[listId]} />
-      ))}
+      <div className={styles.list}>
+        {lists?.allIds.map((listId) => (
+          <List key={listId} listItem={lists.byId[listId]} />
+        ))}
+      </div>
     </div>
   );
 }

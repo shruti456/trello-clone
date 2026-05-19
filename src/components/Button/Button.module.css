@@ -1,0 +1,22 @@
+.primary {
+  background-color: #0079bf;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.secondary {
+  background-color: #dfe1e6;
+  color: black;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.danger {
+  background-color: #cf513d;
+  color: white;
+}
