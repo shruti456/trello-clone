@@ -33,7 +33,7 @@ export default function List({ listItem }) {
   }
   return (
     <div className={styles.listItem}>
-      <h3>{listItem.name}</h3>
+      <h3 className={styles.listHeader}>{listItem.name}</h3>
       {showTaskForm && (
         <form>
           <input

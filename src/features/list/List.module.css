@@ -1,4 +1,21 @@
 .listItem {
   background-color: rgb(94, 151, 132);
   color: black;
+  width: 200px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  background-color: #f8f1f1;
+  border-radius: 8px;
+}
+
+.listHeader {
+  font-size: 16px;
+}
+
+.listHeader h3 {
+  padding: 0;
 }
