@@ -33,7 +33,7 @@ export default function Board() {
   }
   return (
     <div>
-      <h3>Your boards</h3>
+      <h3 className={styles.yourBoards}>Your boards</h3>
       <div className={styles.boards}>
         {boards.allIds.map((id) => {
           return (
@@ -46,22 +46,29 @@ export default function Board() {
             </div>
           );
         })}
-        <div>
-          <button onClick={handleAddBoard} className={styles.createBoard}>
-            Create new board
-          </button>
-        </div>
+      </div>
+      <div>
+        <button onClick={handleAddBoard} className={styles.createBoard}>
+          Create new board
+        </button>
       </div>
       {showCreateBoardForm && (
-        <form onSubmit={handleCreateBoard}>
-          <input
-            value={boardName}
-            onChange={(e) => setBoardName(e.target.value)}
-            placeholder="Add board name"
-          />
-          <button onClick={handleCancelCreation}>Cancel</button>
-          <button type="submit">Create</button>
-        </form>
+        <div className={styles.overlay}>
+          <div className={styles.modal}>
+            <h2>Create Board</h2>
+            <form onSubmit={handleCreateBoard} className={styles.form}>
+              <input
+                value={boardName}
+                onChange={(e) => setBoardName(e.target.value)}
+                placeholder="Board name"
+              />
+              <div className={styles.actionButtons}>
+                <button onClick={handleCancelCreation}>Cancel</button>
+                <button type="submit">Create</button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

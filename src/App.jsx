@@ -1,5 +1,5 @@
 import styles from "./App.module.css";
-
+import "./index.css";
 import Header from "./ui/header";
 import AppRoutes from "./routes/approutes";
 import Sidebar from "./ui/Sidebar";
@@ -10,7 +10,7 @@ function App() {
       <Header />
       <div className={styles.sidebarNContent}>
         <Sidebar />
-        <main>
+        <main className={styles.main}>
           <AppRoutes />
         </main>
       </div>

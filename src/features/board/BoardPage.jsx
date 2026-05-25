@@ -1,18 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import { createList } from "../list/listSlice";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { addListIdInBoard } from "./boardSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { addListIdInBoard, deleteBoard } from "./boardSlice";
 import List from "../list/List";
-import styles from "./Board.module.css";
+import styles from "./BoardPage.module.css";
 import Button from "../../components/button/Button";
+import { PiDotsThreeBold } from "react-icons/pi";
 
 export default function BoardPage() {
   const dispatch = useDispatch();
   const params = useParams();
   const [listName, setListName] = useState("");
+  const [showContextMenu, setShowContextMenu] = useState(false);
   const [showListForm, setShowListForm] = useState("");
   const lists = useSelector((x) => x.lists);
+  const boardName = useSelector((x) => x.board)?.byId[params.boardId]?.name;
+  const navigate = useNavigate();
+  const boards = useSelector((x) => x.board);
   function handleAddList() {
     if (!listName) return;
     const listId = crypto.randomUUID();
@@ -21,9 +26,23 @@ export default function BoardPage() {
     setListName("");
     setShowListForm(false);
   }
+  function handleBoardDeletion() {
+    dispatch(deleteBoard(params.boardId));
+    if (boards?.allIds.length > 0) navigate("/");
+  }
   return (
     <div>
-      BoardPage
+      <header className={styles.boardHeader}>
+        <span>{boardName}</span>
+        <button onClick={() => setShowContextMenu((y) => !y)}>
+          <PiDotsThreeBold />
+        </button>
+      </header>
+      {showContextMenu && (
+        <div>
+          <button onClick={handleBoardDeletion}>Delete board</button>
+        </div>
+      )}
       {showListForm && (
         <div>
           <input

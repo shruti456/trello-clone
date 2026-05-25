@@ -19,3 +19,12 @@
 .listHeader h3 {
   padding: 0;
 }
+
+.boardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #c6bfbf;
+  padding: 10px;
+  margin-bottom: 12px;
+}

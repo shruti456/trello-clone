@@ -1,0 +1,22 @@
+.sidebar {
+  width: 15%;
+  background-color: rgb(169, 165, 187);
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 10px;
+}
+.navlink {
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+  display: flex;
+  gap: 2px;
+}
+
+.active {
+  color: blue;
+  font-weight: 600;
+}

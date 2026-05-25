@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTask } from "../task/taskSlice";
-import { addTaskId } from "./listSlice";
+import { addTaskId, deletelist } from "./listSlice";
 import Task from "../task/Task";
 import styles from "./List.module.css";
 import Button from "../../components/button/Button";
+import { PiDotsThreeBold } from "react-icons/pi";
+import { deleteListId } from "../board/boardSlice";
+import { useParams } from "react-router-dom";
 
 export default function List({ listItem }) {
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const params = useParams();
   const [taskName, setTaskName] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const dispatch = useDispatch();
@@ -31,9 +36,24 @@ export default function List({ listItem }) {
     setTaskName("");
     setTaskDesc("");
   }
+  function handleListDeletion() {
+    dispatch(deletelist(listItem.id));
+    dispatch(deleteListId({ boardId: params.boardId, listId: listItem.id }));
+  }
+
   return (
     <div className={styles.listItem}>
-      <h3 className={styles.listHeader}>{listItem.name}</h3>
+      <header className={styles.boardHeader}>
+        <h3 className={styles.listHeader}>{listItem.name}</h3>
+        <button onClick={() => setShowContextMenu((y) => !y)}>
+          <PiDotsThreeBold />
+        </button>
+      </header>
+      {showContextMenu && (
+        <div>
+          <button onClick={handleListDeletion}>Delete list</button>
+        </div>
+      )}
       {showTaskForm && (
         <form>
           <input
@@ -57,7 +77,7 @@ export default function List({ listItem }) {
       )}
 
       {listItem.taskIds.map((taskId) => (
-        <Task key={taskId} taskId={taskId} />
+        <Task key={taskId} taskId={taskId} listId={listItem.id} />
       ))}
       {!showTaskForm && (
         <Button onClick={handleShowTaskForm} type="button" variant="secondary">

@@ -19,8 +19,19 @@ const listSlice = createSlice({
       const selectedList = state.byId[listId];
       if (selectedList) selectedList.taskIds.push(action.payload.taskId);
     },
+    deletelist(state, action) {
+      state.allIds = state.allIds.filter((x) => x !== action.payload);
+      delete state.byId[action.payload];
+    },
+    deleteTaskId(state, action) {
+      const listId = action.payload.listId;
+      state.byId[listId].taskIds = state.byId[listId].taskIds.filter(
+        (x) => x !== action.payload.taskId,
+      );
+    },
   },
 });
 
 export default listSlice.reducer;
-export const { createList, addTaskId } = listSlice.actions;
+export const { createList, addTaskId, deletelist, deleteTaskId } =
+  listSlice.actions;
