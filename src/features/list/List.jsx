@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTask } from "../task/taskSlice";
 import { addTaskId, deletelist } from "./listSlice";
@@ -8,6 +8,8 @@ import Button from "../../components/button/Button";
 import { PiDotsThreeBold } from "react-icons/pi";
 import { deleteListId } from "../board/boardSlice";
 import { useParams } from "react-router-dom";
+import ContextMenu from "../../components/ContextMenu/ContextMenu";
+import { useClickOutside } from "../../utils/useDeleteOutsideHook";
 
 export default function List({ listItem }) {
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -16,6 +18,10 @@ export default function List({ listItem }) {
   const [taskName, setTaskName] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const dispatch = useDispatch();
+  const ref = useRef();
+  useClickOutside(ref, () => {
+    setShowContextMenu(false);
+  });
   function handleShowTaskForm() {
     setShowTaskForm(true);
   }
@@ -45,15 +51,16 @@ export default function List({ listItem }) {
     <div className={styles.listItem}>
       <header className={styles.boardHeader}>
         <h3 className={styles.listHeader}>{listItem.name}</h3>
-        <button onClick={() => setShowContextMenu((y) => !y)}>
-          <PiDotsThreeBold />
-        </button>
-      </header>
-      {showContextMenu && (
-        <div>
-          <button onClick={handleListDeletion}>Delete list</button>
+        <div ref={ref} className={styles.contextMenuIcon}>
+          <button onClick={() => setShowContextMenu((y) => !y)}>
+            <PiDotsThreeBold />
+          </button>
+          {showContextMenu && (
+            <ContextMenu menuItems={["Delete"]} onClick={handleListDeletion} />
+          )}
         </div>
-      )}
+      </header>
+
       {showTaskForm && (
         <form>
           <input

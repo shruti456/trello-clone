@@ -1,15 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
 import { createList } from "../list/listSlice";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { addListIdInBoard, deleteBoard } from "./boardSlice";
 import List from "../list/List";
 import styles from "./BoardPage.module.css";
 import Button from "../../components/button/Button";
 import { PiDotsThreeBold } from "react-icons/pi";
+import ContextMenu from "../../components/ContextMenu/ContextMenu";
+import { useClickOutside } from "../../utils/useDeleteOutsideHook";
 
 export default function BoardPage() {
   const dispatch = useDispatch();
+  const ref = useRef(null);
   const params = useParams();
   const [listName, setListName] = useState("");
   const [showContextMenu, setShowContextMenu] = useState(false);
@@ -18,6 +21,9 @@ export default function BoardPage() {
   const boardName = useSelector((x) => x.board)?.byId[params.boardId]?.name;
   const navigate = useNavigate();
   const boards = useSelector((x) => x.board);
+  useClickOutside(ref, () => {
+    setShowContextMenu(false);
+  });
   function handleAddList() {
     if (!listName) return;
     const listId = crypto.randomUUID();
@@ -30,19 +36,21 @@ export default function BoardPage() {
     dispatch(deleteBoard(params.boardId));
     if (boards?.allIds.length > 0) navigate("/");
   }
+
   return (
     <div>
       <header className={styles.boardHeader}>
         <span>{boardName}</span>
-        <button onClick={() => setShowContextMenu((y) => !y)}>
-          <PiDotsThreeBold />
-        </button>
-      </header>
-      {showContextMenu && (
-        <div>
-          <button onClick={handleBoardDeletion}>Delete board</button>
+        <div ref={ref} className={styles.contextMenuIcon}>
+          <button onClick={() => setShowContextMenu((y) => !y)}>
+            <PiDotsThreeBold />
+          </button>
+          {showContextMenu && (
+            <ContextMenu menuItems={["Delete"]} onClick={handleBoardDeletion} />
+          )}
         </div>
-      )}
+      </header>
+
       {showListForm && (
         <div>
           <input
