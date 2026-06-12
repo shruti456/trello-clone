@@ -6,13 +6,24 @@ import { useRef, useState } from "react";
 import { deleteTask } from "./taskSlice";
 import { useClickOutside } from "../../utils/useDeleteOutsideHook";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
+import { useDraggable, useDroppable } from "@dnd-kit/react";
 
 export default function Task({ taskId, listId }) {
   const task = useSelector((x) => x.tasks).byId[taskId];
   const ref = useRef();
   const [showContextMenu, setShowContextMenu] = useState(false);
   const dispatch = useDispatch();
-
+  const { ref: draggableRef } = useDraggable({
+    id: taskId,
+    data: { listId },
+  });
+  const { ref: droppableRef } = useDroppable({
+    id: taskId,
+  });
+  const combinedRef = (node) => {
+    draggableRef(node);
+    droppableRef(node);
+  };
   useClickOutside(ref, () => {
     setShowContextMenu(false);
   });
@@ -21,8 +32,8 @@ export default function Task({ taskId, listId }) {
     dispatch(deleteTaskId({ listId: listId, taskId: taskId }));
   }
   return (
-    <div className={styles.task}>
-      <div>{task.name}</div>
+    <div ref={combinedRef} className={styles.task}>
+      <div>{task?.name}</div>
       <div ref={ref} className={styles.contextMenuIcon}>
         <button onClick={() => setShowContextMenu((y) => !y)}>
           <PiDotsThreeBold />

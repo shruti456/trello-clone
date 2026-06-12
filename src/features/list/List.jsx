@@ -10,6 +10,8 @@ import { deleteListId } from "../board/boardSlice";
 import { useParams } from "react-router-dom";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import { useClickOutside } from "../../utils/useDeleteOutsideHook";
+import CreateForm from "../../components/CreateForm/CreateForm";
+import { useDraggable, useDroppable } from "@dnd-kit/react";
 
 export default function List({ listItem }) {
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -19,13 +21,29 @@ export default function List({ listItem }) {
   const [taskDesc, setTaskDesc] = useState("");
   const dispatch = useDispatch();
   const ref = useRef();
+  const { ref: droppableList, isDropTarget } = useDroppable({
+    id: listItem.id,
+    // data: {listId:}
+  });
+  const { ref: draggableList } = useDraggable({
+    id: listItem.id,
+  });
+  const combinedRef = (node) => {
+    draggableList(node);
+    droppableList(node);
+  };
   useClickOutside(ref, () => {
     setShowContextMenu(false);
   });
+
   function handleShowTaskForm() {
     setShowTaskForm(true);
   }
-
+  function handleCancel() {
+    setShowTaskForm(false);
+    setTaskName("");
+    setTaskDesc("");
+  }
   function handleAddTask(e) {
     e.preventDefault();
     const taskId = crypto.randomUUID();
@@ -48,8 +66,8 @@ export default function List({ listItem }) {
   }
 
   return (
-    <div className={styles.listItem}>
-      <header className={styles.boardHeader}>
+    <div className={styles.listItem} ref={draggableList}>
+      <header className={styles.header}>
         <h3 className={styles.listHeader}>{listItem.name}</h3>
         <div ref={ref} className={styles.contextMenuIcon}>
           <button onClick={() => setShowContextMenu((y) => !y)}>
@@ -61,8 +79,19 @@ export default function List({ listItem }) {
         </div>
       </header>
 
+      {isDropTarget && <div>OVER LIST {listItem.id}</div>}
+      <div ref={droppableList} className={styles.taskContainer}>
+        {listItem.taskIds.map((taskId) => (
+          <Task key={taskId} taskId={taskId} listId={listItem.id} />
+        ))}
+      </div>
+
       {showTaskForm && (
-        <form>
+        <CreateForm
+          title="Create task"
+          onCancel={handleCancel}
+          onSubmit={handleAddTask}
+        >
           <input
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
@@ -73,24 +102,14 @@ export default function List({ listItem }) {
             onChange={(e) => setTaskDesc(e.target.value)}
             placeholder="Task Description"
           />
-          <Button
-            onClick={(e) => handleAddTask(e)}
-            type="button"
-            variant="primary"
-          >
-            Add task
-          </Button>
-        </form>
+        </CreateForm>
       )}
-
-      {listItem.taskIds.map((taskId) => (
-        <Task key={taskId} taskId={taskId} listId={listItem.id} />
-      ))}
       {!showTaskForm && (
         <Button onClick={handleShowTaskForm} type="button" variant="secondary">
           Add a task
         </Button>
       )}
     </div>
+    // </DragDropProvider>
   );
 }

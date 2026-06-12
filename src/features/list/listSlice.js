@@ -29,9 +29,36 @@ const listSlice = createSlice({
         (x) => x !== action.payload.taskId,
       );
     },
+    reorderTask(state, action) {
+      const selectedListId = action.payload.listId;
+      const tasks = state.byId[selectedListId].taskIds;
+      let targetIndex = tasks.findIndex((y) => y === action.payload.targetId);
+      const sourceIndex = tasks.findIndex((y) => y === action.payload.sourceId);
+      const [movedTask] = tasks.splice(sourceIndex, 1);
+
+      if (sourceIndex < targetIndex) {
+        targetIndex--;
+      }
+
+      tasks.splice(targetIndex, 0, movedTask);
+    },
+    appendAtBottom(state, action) {
+      const targetListId = action.payload.targetListId;
+      const sourceListId = action.payload.sourceListId;
+      state.byId[sourceListId].taskIds = state.byId[
+        sourceListId
+      ].taskIds.filter((x) => x !== action.payload.sourceTaskId);
+      state.byId[targetListId].taskIds.push(action.payload.sourceTaskId);
+    },
   },
 });
 
 export default listSlice.reducer;
-export const { createList, addTaskId, deletelist, deleteTaskId } =
-  listSlice.actions;
+export const {
+  createList,
+  addTaskId,
+  deletelist,
+  deleteTaskId,
+  reorderTask,
+  appendAtBottom,
+} = listSlice.actions;

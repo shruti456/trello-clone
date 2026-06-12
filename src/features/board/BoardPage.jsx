@@ -9,6 +9,9 @@ import Button from "../../components/button/Button";
 import { PiDotsThreeBold } from "react-icons/pi";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import { useClickOutside } from "../../utils/useDeleteOutsideHook";
+import CreateForm from "../../components/CreateForm/CreateForm";
+import { DragDropProvider } from "@dnd-kit/react";
+import { reorderTask, appendAtBottom } from "../list/listSlice";
 
 export default function BoardPage() {
   const dispatch = useDispatch();
@@ -36,6 +39,36 @@ export default function BoardPage() {
     dispatch(deleteBoard(params.boardId));
     if (boards?.allIds.length > 0) navigate("/");
   }
+  function handleCancel() {
+    setListName("");
+    setShowListForm(false);
+  }
+
+  function onDragEnd(event) {
+    console.log("FULL EVENT", event);
+    console.log("SOURCE", event.operation.source);
+    console.log("TARGET", event.operation.target);
+    console.log(event.operation.source.id);
+    console.log(event.operation.target?.id);
+    const sourceId = event.operation.source.id;
+    const targetId = event.operation.target?.id;
+    const sourceListId = event.operation.source.data.listId;
+    console.log(sourceListId);
+    if (!event.operation.target) return;
+    if (sourceId === targetId) return;
+
+    if (!lists?.allIds.includes(targetId))
+      dispatch(reorderTask({ listId: sourceListId, sourceId, targetId }));
+    else
+      dispatch(
+        appendAtBottom({
+          targetListId: targetId,
+          sourceListId,
+          sourceTaskId: sourceId,
+          // targetListId: targetId,
+        }),
+      );
+  }
 
   return (
     <div>
@@ -52,29 +85,34 @@ export default function BoardPage() {
       </header>
 
       {showListForm && (
-        <div>
+        <CreateForm
+          onCancel={handleCancel}
+          onSubmit={handleAddList}
+          title="Create list"
+        >
           <input
             value={listName}
             onChange={(e) => setListName(e.target.value)}
             placeholder="Add list name"
           />
-          <Button onClick={handleAddList}>Add list</Button>
-        </div>
+        </CreateForm>
       )}
-      <div className={styles.list}>
-        {lists?.allIds.map((listId) => (
-          <List key={listId} listItem={lists.byId[listId]} />
-        ))}
-        {!showListForm && (
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => setShowListForm(true)}
-          >
-            Add a list
-          </Button>
-        )}
-      </div>
+      <DragDropProvider onDragEnd={(event) => onDragEnd(event)}>
+        <div className={styles.list}>
+          {lists?.allIds.map((listId) => (
+            <List key={listId} listItem={lists.byId[listId]} />
+          ))}
+          {!showListForm && (
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => setShowListForm(true)}
+            >
+              Add a list
+            </Button>
+          )}
+        </div>
+      </DragDropProvider>
     </div>
   );
 }

@@ -20,14 +20,21 @@
   padding: 0;
 }
 
-.boardHeader {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #c6bfbf;
   padding: 10px;
   margin-bottom: 12px;
+  width: 100%;
 }
 .contextMenuIcon {
   position: relative;
+}
+.taskContainer {
+  flex: 1;
+  width: 100%;
+  min-height: 100px;
+  border: 1px dashed red;
 }
